@@ -18,7 +18,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.Manifest;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
@@ -30,15 +29,14 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
-import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import android.util.Size;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -48,9 +46,6 @@ import android.widget.Toast;
 
 import edu.wuwang.opengl.BaseActivity;
 import edu.wuwang.opengl.R;
-import edu.wuwang.opengl.filter.GrayFilter;
-import edu.wuwang.opengl.filter.NoFilter;
-import edu.wuwang.opengl.filter.WaterMarkFilter;
 import edu.wuwang.opengl.filter.ZipPkmAnimationFilter;
 import edu.wuwang.opengl.utils.PermissionUtils;
 

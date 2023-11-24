@@ -6,18 +6,11 @@
  */
 package edu.wuwang.opengl.image;
 
-import android.app.Activity;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.v7.widget.PopupMenu;
-import android.view.ContextMenu;
-import android.view.Gravity;
+import androidx.appcompat.widget.PopupMenu;
+
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import edu.wuwang.opengl.BaseActivity;
 import edu.wuwang.opengl.R;

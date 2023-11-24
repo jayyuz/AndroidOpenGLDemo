@@ -1,6 +1,6 @@
 package edu.wuwang.opengl.camera;
 
-import android.support.v7.widget.AppCompatSeekBar;
+import androidx.appcompat.widget.AppCompatSeekBar;
 import android.util.Log;
 import android.widget.SeekBar;
 import edu.wuwang.opengl.R;
