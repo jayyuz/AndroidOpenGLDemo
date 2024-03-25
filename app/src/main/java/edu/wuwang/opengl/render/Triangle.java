@@ -1,7 +1,7 @@
 /*
  *
  * Triangle.java
- * 
+ *
  * Created by Wuwang on 2016/9/30
  */
 package edu.wuwang.opengl.render;
@@ -39,7 +39,7 @@ public class Triangle extends Shape {
 
     static final int COORDS_PER_VERTEX = 3;
     static float triangleCoords[] = {
-            0.5f,  0.5f, 0.0f, // top
+            0.5f, 0.5f, 0.0f, // top
             -0.5f, -0.5f, 0.0f, // bottom left
             0.5f, -0.5f, 0.0f  // bottom right
     };
@@ -47,7 +47,7 @@ public class Triangle extends Shape {
     private int mPositionHandle;
     private int mColorHandle;
 
-    private float[] mViewMatrix=new float[16];
+    private float[] mViewMatrix = new float[16];
 
     //顶点个数
     private final int vertexCount = triangleCoords.length / COORDS_PER_VERTEX;
@@ -57,7 +57,7 @@ public class Triangle extends Shape {
     private int mMatrixHandler;
 
     //设置颜色，依次为红绿蓝和透明通道
-    float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float color[] = {1.0f, 1.0f, 1.0f, 1.0f};
 
     public Triangle(View mView) {
         super(mView);

@@ -1,7 +1,7 @@
 /*
  *
  * Camera2Activity.java
- * 
+ *
  * Created by Wuwang on 2017/3/6
  * Copyright © 2016年 深圳哎吖科技. All rights reserved.
  */
@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -34,9 +35,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+
 import android.util.Size;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -66,16 +69,16 @@ public class Camera2Activity extends BaseActivity implements FrameCallback {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PermissionUtils.askPermission(this, new String[]{Manifest.permission.CAMERA, Manifest
-            .permission.WRITE_EXTERNAL_STORAGE}, 10, initViewRunnable);
+                .permission.WRITE_EXTERNAL_STORAGE}, 10, initViewRunnable);
     }
 
-    protected void onFilterSet(TextureController controller){
-        ZipPkmAnimationFilter mAniFilter=new ZipPkmAnimationFilter(getResources());
+    protected void onFilterSet(TextureController controller) {
+        ZipPkmAnimationFilter mAniFilter = new ZipPkmAnimationFilter(getResources());
         mAniFilter.setAnimation("assets/etczip/cc.zip");
         controller.addFilter(mAniFilter);
     }
 
-    protected void setContentView(){
+    protected void setContentView() {
         setContentView(R.layout.activity_camera2);
     }
 
@@ -86,11 +89,11 @@ public class Camera2Activity extends BaseActivity implements FrameCallback {
             //TODO 设置数据源
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mRenderer = new Camera2Renderer();
-            }else{
+            } else {
                 mRenderer = new Camera1Renderer();
             }
             setContentView();
-            mSurfaceView = (SurfaceView)findViewById(R.id.mSurface);
+            mSurfaceView = (SurfaceView) findViewById(R.id.mSurface);
             mController = new TextureController(Camera2Activity.this);
 //            WaterMarkFilter filter=new WaterMarkFilter(getResources());
 //            filter.setWaterMark(BitmapFactory.decodeResource(getResources(),R.mipmap.logo));
@@ -123,17 +126,17 @@ public class Camera2Activity extends BaseActivity implements FrameCallback {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         PermissionUtils.onRequestPermissionsResult(requestCode == 10, grantResults, initViewRunnable,
-            new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(Camera2Activity.this, "没有获得必要的权限", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            });
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(Camera2Activity.this, "没有获得必要的权限", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
     }
 
-    public void onClick(View view){
-        switch (view.getId()){
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.mShutter:
                 mController.takePhoto();
                 break;
@@ -169,8 +172,8 @@ public class Camera2Activity extends BaseActivity implements FrameCallback {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Bitmap bitmap=Bitmap.createBitmap(720,1280, Bitmap.Config.ARGB_8888);
-                ByteBuffer b=ByteBuffer.wrap(bytes);
+                Bitmap bitmap = Bitmap.createBitmap(720, 1280, Bitmap.Config.ARGB_8888);
+                ByteBuffer b = ByteBuffer.wrap(bytes);
                 bitmap.copyPixelsFromBuffer(b);
                 saveBitmap(bitmap);
                 bitmap.recycle();
@@ -178,15 +181,15 @@ public class Camera2Activity extends BaseActivity implements FrameCallback {
         }).start();
     }
 
-    protected String getSD(){
+    protected String getSD() {
         return Environment.getExternalStorageDirectory().getAbsolutePath();
     }
 
     //图片保存
-    public void saveBitmap(Bitmap b){
-        String path =  getSD()+ "/OpenGLDemo/photo/";
-        File folder=new File(path);
-        if(!folder.exists()&&!folder.mkdirs()){
+    public void saveBitmap(Bitmap b) {
+        String path = getSD() + "/OpenGLDemo/photo/";
+        File folder = new File(path);
+        if (!folder.exists() && !folder.mkdirs()) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -196,7 +199,7 @@ public class Camera2Activity extends BaseActivity implements FrameCallback {
             return;
         }
         long dataTake = System.currentTimeMillis();
-        final String jpegName=path+ dataTake +".jpg";
+        final String jpegName = path + dataTake + ".jpg";
         try {
             FileOutputStream fout = new FileOutputStream(jpegName);
             BufferedOutputStream bos = new BufferedOutputStream(fout);
@@ -210,7 +213,7 @@ public class Camera2Activity extends BaseActivity implements FrameCallback {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(Camera2Activity.this, "保存成功->"+jpegName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(Camera2Activity.this, "保存成功->" + jpegName, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -276,7 +279,7 @@ public class Camera2Activity extends BaseActivity implements FrameCallback {
         private Size mPreviewSize;
 
         Camera2Renderer() {
-            mCameraManager = (CameraManager)getSystemService(CAMERA_SERVICE);
+            mCameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
             mThread = new HandlerThread("camera2 ");
             mThread.start();
             mHandler = new Handler(mThread.getLooper());
@@ -284,64 +287,64 @@ public class Camera2Activity extends BaseActivity implements FrameCallback {
 
         @Override
         public void onDestroy() {
-            if(mDevice!=null){
+            if (mDevice != null) {
                 mDevice.close();
-                mDevice=null;
+                mDevice = null;
             }
         }
 
         @Override
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
             try {
-                if(mDevice!=null){
+                if (mDevice != null) {
                     mDevice.close();
-                    mDevice=null;
+                    mDevice = null;
                 }
-                CameraCharacteristics c=mCameraManager.getCameraCharacteristics(cameraId+"");
-                StreamConfigurationMap map=c.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-                Size[] sizes=map.getOutputSizes(SurfaceHolder.class);
+                CameraCharacteristics c = mCameraManager.getCameraCharacteristics(cameraId + "");
+                StreamConfigurationMap map = c.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                Size[] sizes = map.getOutputSizes(SurfaceHolder.class);
                 //自定义规则，选个大小
-                mPreviewSize=sizes[0];
-                mController.setDataSize(mPreviewSize.getHeight(),mPreviewSize.getWidth());
+                mPreviewSize = sizes[0];
+                mController.setDataSize(mPreviewSize.getHeight(), mPreviewSize.getWidth());
                 mCameraManager.openCamera(cameraId + "", new CameraDevice.StateCallback() {
                     @Override
                     public void onOpened(CameraDevice camera) {
-                        mDevice=camera;
+                        mDevice = camera;
                         try {
-                            Surface surface=new Surface(mController
-                                .getTexture());
-                            final CaptureRequest.Builder builder=mDevice.createCaptureRequest
-                                (TEMPLATE_PREVIEW);
+                            Surface surface = new Surface(mController
+                                    .getTexture());
+                            final CaptureRequest.Builder builder = mDevice.createCaptureRequest
+                                    (TEMPLATE_PREVIEW);
                             builder.addTarget(surface);
                             mController.getTexture().setDefaultBufferSize(
-                                mPreviewSize.getWidth(),mPreviewSize.getHeight());
+                                    mPreviewSize.getWidth(), mPreviewSize.getHeight());
                             mDevice.createCaptureSession(Arrays.asList(surface), new
-                                CameraCaptureSession.StateCallback() {
-                                @Override
-                                public void onConfigured(CameraCaptureSession session) {
-                                    try {
-                                        session.setRepeatingRequest(builder.build(), new CameraCaptureSession.CaptureCallback() {
-                                            @Override
-                                            public void onCaptureProgressed(CameraCaptureSession session, CaptureRequest request, CaptureResult partialResult) {
-                                                super.onCaptureProgressed(session, request, partialResult);
+                                    CameraCaptureSession.StateCallback() {
+                                        @Override
+                                        public void onConfigured(CameraCaptureSession session) {
+                                            try {
+                                                session.setRepeatingRequest(builder.build(), new CameraCaptureSession.CaptureCallback() {
+                                                    @Override
+                                                    public void onCaptureProgressed(CameraCaptureSession session, CaptureRequest request, CaptureResult partialResult) {
+                                                        super.onCaptureProgressed(session, request, partialResult);
+                                                    }
+
+                                                    @Override
+                                                    public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
+                                                        super.onCaptureCompleted(session, request, result);
+                                                        mController.requestRender();
+                                                    }
+                                                }, mHandler);
+                                            } catch (CameraAccessException e) {
+                                                e.printStackTrace();
                                             }
+                                        }
 
-                                            @Override
-                                            public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
-                                                super.onCaptureCompleted(session, request, result);
-                                                mController.requestRender();
-                                            }
-                                        },mHandler);
-                                    } catch (CameraAccessException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+                                        @Override
+                                        public void onConfigureFailed(CameraCaptureSession session) {
 
-                                @Override
-                                public void onConfigureFailed(CameraCaptureSession session) {
-
-                                }
-                            },mHandler);
+                                        }
+                                    }, mHandler);
                         } catch (CameraAccessException e) {
                             e.printStackTrace();
                         }
@@ -349,7 +352,7 @@ public class Camera2Activity extends BaseActivity implements FrameCallback {
 
                     @Override
                     public void onDisconnected(CameraDevice camera) {
-                        mDevice=null;
+                        mDevice = null;
                     }
 
                     @Override
