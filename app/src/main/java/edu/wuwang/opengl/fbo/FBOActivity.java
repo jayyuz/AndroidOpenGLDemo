@@ -1,7 +1,7 @@
 /*
  *
  * FBOActivity.java
- * 
+ *
  * Created by Wuwang on 2016/12/24
  * Copyright © 2016年 深圳哎吖科技. All rights reserved.
  */
@@ -22,7 +22,9 @@ import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.provider.MediaStore;
+
 import androidx.annotation.Nullable;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -40,26 +42,26 @@ public class FBOActivity extends BaseActivity implements FBORender.Callback {
     private ImageView mImage;
     private GLSurfaceView mGLView;
 
-    private int mBmpWidth,mBmpHeight;
+    private int mBmpWidth, mBmpHeight;
     private String mImgPath;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fbo);
-        mGLView= (GLSurfaceView)findViewById(R.id.mGLView);
+        mGLView = (GLSurfaceView) findViewById(R.id.mGLView);
         mGLView.setEGLContextClientVersion(2);
-        mRender=new FBORender(getResources());
+        mRender = new FBORender(getResources());
         mRender.setCallback(this);
         mGLView.setRenderer(mRender);
         mGLView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        mImage= (ImageView)findViewById(R.id.mImage);
+        mImage = (ImageView) findViewById(R.id.mImage);
     }
 
-    public void onClick(View view){
+    public void onClick(View view) {
         //调用相册
         Intent intent = new Intent(Intent.ACTION_PICK,
-            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, 1);
     }
 
@@ -73,10 +75,10 @@ public class FBOActivity extends BaseActivity implements FBORender.Callback {
             c.moveToFirst();
             int columnIndex = c.getColumnIndex(filePathColumns[0]);
             mImgPath = c.getString(columnIndex);
-            Log.e("wuwang","img->"+mImgPath);
-            Bitmap bmp=BitmapFactory.decodeFile(mImgPath);
-            mBmpWidth=bmp.getWidth();
-            mBmpHeight=bmp.getHeight();
+            Log.e("wuwang", "img->" + mImgPath);
+            Bitmap bmp = BitmapFactory.decodeFile(mImgPath);
+            mBmpWidth = bmp.getWidth();
+            mBmpHeight = bmp.getHeight();
             mRender.setBitmap(bmp);
             mGLView.requestRender();
             c.close();
@@ -88,8 +90,8 @@ public class FBOActivity extends BaseActivity implements FBORender.Callback {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.e("wuwang","callback success");
-                Bitmap bitmap=Bitmap.createBitmap(mBmpWidth,mBmpHeight, Bitmap.Config.ARGB_8888);
+                Log.e("wuwang", "callback success");
+                Bitmap bitmap = Bitmap.createBitmap(mBmpWidth, mBmpHeight, Bitmap.Config.ARGB_8888);
                 bitmap.copyPixelsFromBuffer(data);
                 saveBitmap(bitmap);
                 data.clear();
@@ -98,10 +100,10 @@ public class FBOActivity extends BaseActivity implements FBORender.Callback {
     }
 
     //图片保存
-    public void saveBitmap(final Bitmap b){
-        String path = mImgPath.substring(0,mImgPath.lastIndexOf("/")+1);
-        File folder=new File(path);
-        if(!folder.exists()&&!folder.mkdirs()){
+    public void saveBitmap(final Bitmap b) {
+        String path = mImgPath.substring(0, mImgPath.lastIndexOf("/") + 1);
+        File folder = new File(path);
+        if (!folder.exists() && !folder.mkdirs()) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -111,7 +113,7 @@ public class FBOActivity extends BaseActivity implements FBORender.Callback {
             return;
         }
         long dataTake = System.currentTimeMillis();
-        final String jpegName=path+ dataTake +".jpg";
+        final String jpegName = path + dataTake + ".jpg";
         try {
             FileOutputStream fout = new FileOutputStream(jpegName);
             BufferedOutputStream bos = new BufferedOutputStream(fout);
@@ -125,7 +127,7 @@ public class FBOActivity extends BaseActivity implements FBORender.Callback {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(FBOActivity.this, "保存成功->"+jpegName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(FBOActivity.this, "保存成功->" + jpegName, Toast.LENGTH_SHORT).show();
                 mImage.setImageBitmap(b);
             }
         });

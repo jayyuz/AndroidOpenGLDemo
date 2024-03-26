@@ -7,17 +7,17 @@
  */
 package edu.wuwang.opengl.filter;
 
+import android.content.res.Resources;
+import android.opengl.GLES20;
+import android.util.Log;
+import android.util.SparseArray;
+
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
-
-import android.content.res.Resources;
-import android.opengl.GLES20;
-import android.util.Log;
-import android.util.SparseArray;
 
 import edu.wuwang.opengl.utils.MatrixUtils;
 
@@ -268,6 +268,16 @@ public abstract class AFilter {
      * 设置其他扩展数据
      */
     protected void onSetExpandData() {
+        /**
+         * 在 OpenGL 中，uniform 变量是一种特殊类型的着色器变量，它们对于给定的着色器程序是全局的，即它们在着色器程序的所有着色器调用中保持不变。这些变量通常用于传递常量值，如变换矩阵、光照参数或其他全局设置。
+         * 函数 glUniformMatrix4fv 的作用是将一个或多个 4x4 浮点矩阵的值传递给指定的 uniform 变量。这个函数通常用于传递变换矩阵，如模型矩阵、视图矩阵或投影矩阵到顶点着色器。
+         * 函数的参数如下：
+         * int location: uniform 变量的位置索引。这个位置可以通过调用 glGetUniformLocation 并传递着色器程序的 ID 和 uniform 变量的名称来获取。
+         * int count: 要修改的矩阵数量。如果只更新一个矩阵，这个值应该是 1。
+         * boolean transpose: 指示是否需要转置矩阵。如果为 true，矩阵将在传递之前被转置。在大多数情况下，这个参数应该设置为 false，因为 OpenGL ES 期望矩阵以列主序存储。
+         * float[] value: 包含一个或多个矩阵的浮点数组。如果 count 大于 1，这个数组应该包含连续的矩阵，每个矩阵都是 4x4 的浮点值。
+         *
+         */
         GLES20.glUniformMatrix4fv(mHMatrix, 1, false, matrix, 0);
     }
 

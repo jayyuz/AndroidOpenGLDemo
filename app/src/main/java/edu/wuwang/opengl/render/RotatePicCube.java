@@ -363,8 +363,9 @@ public class RotatePicCube extends Shape {
         textureUniformHandle = GLES20.glGetUniformLocation(program, "vTexture");
         // 绘制立方体的每个面
         for (int i = 0; i < 6; i++) {
-            // 绑定纹理
+            // 激活纹理0
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            // 每个面绑定不同的纹理id
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture[i]);
             GLES20.glUniform1i(textureUniformHandle, 0);
 
