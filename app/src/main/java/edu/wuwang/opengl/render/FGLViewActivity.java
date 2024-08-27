@@ -39,6 +39,7 @@ public class FGLViewActivity extends AppCompatActivity implements View.OnClickLi
     private void init() {
         mChange = (Button) findViewById(R.id.mChange);
         mGLView = (FGLView) findViewById(R.id.mGLView);
+        mGLView.setShape(CubeNew.class);
     }
 
     public void onClick(View view) {

@@ -24,7 +24,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import edu.wuwang.opengl.R;
 
-public class RotatePicCube extends Shape {
+public class RotatePicCubeNew extends Shape {
 
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -52,7 +52,7 @@ public class RotatePicCube extends Shape {
         }
     };
 
-    private FloatBuffer vertexBuffer, colorBuffer, textureCoordinationIndexBuffer, textureCoordinationOffsetIndexBuffer;
+    private FloatBuffer vertexBuffer, colorBuffer, textureCoordinationBuffer, textureCoordinationOffsetIndexBuffer;
 
     private ShortBuffer cubePositionsIndexBuffer;
 
@@ -67,7 +67,7 @@ public class RotatePicCube extends Shape {
                     "void main() {" +
                     "  gl_Position = vMatrix * vPosition;" +
                     "  vColor = aColor;" +
-                    "  aCoordinate = vCoordinate + vCoordinateOffset;" +
+                    "  aCoordinate = vCoordinate;" +
                     "}";
 
     private final String fragmentShaderCode =
@@ -75,6 +75,9 @@ public class RotatePicCube extends Shape {
                     "varying vec4 vColor;" +
                     "uniform sampler2D vTexture;" +
                     "varying vec2 aCoordinate;" +
+                    "uniform sampler2D u_Textures[6]; // 假设最多有 6 个纹理\n" +
+                    "varying vec2 v_TexCoord;\n" +
+                    "uniform int u_TextureIndex;" +
                     "void main() {" +
                     "  vec2 a = vec2(aCoordinate.x, aCoordinate.y);" +
                     "  gl_FragColor = texture2D(vTexture, a);" +
@@ -95,122 +98,41 @@ public class RotatePicCube extends Shape {
     // 右手坐标系：食指指向x轴，中指指向y轴，大拇指指向z轴
     // 如果按照平面二维笛卡尔坐标系的画法，x轴向右，y轴向上，z轴则指向自己
     private final float[] cubePositions = {
-            // Front face
-            -1.0f, 1.0f, 1.0f,   // top-left
-            -1.0f, -1.0f, 1.0f,  // bottom-left
-            1.0f, -1.0f, 1.0f,   // bottom-right
-            1.0f, 1.0f, 1.0f,    // top-right
-            // Right face
-            1.0f, 1.0f, 1.0f,    // top-left (from right face perspective)
-            1.0f, -1.0f, 1.0f,   // bottom-left
-            1.0f, -1.0f, -1.0f,  // bottom-right
-            1.0f, 1.0f, -1.0f,   // top-right
-            // Back face
-            1.0f, 1.0f, -1.0f,   // top-right (from back face perspective)
-            1.0f, -1.0f, -1.0f,  // bottom-right
-            -1.0f, -1.0f, -1.0f, // bottom-left
-            -1.0f, 1.0f, -1.0f,  // top-left
-            // Left face
-            -1.0f, 1.0f, -1.0f,  // top-right (from left face perspective)
-            -1.0f, -1.0f, -1.0f, // bottom-right
-            -1.0f, -1.0f, 1.0f,  // bottom-left
-            -1.0f, 1.0f, 1.0f,   // top-left
-            // Top face
-            -1.0f, 1.0f, -1.0f,  // top-left (from top face perspective)
-            -1.0f, 1.0f, 1.0f,   // bottom-left
-            1.0f, 1.0f, 1.0f,    // bottom-right
-            1.0f, 1.0f, -1.0f,   // top-right
-            // Bottom face
-            -1.0f, -1.0f, 1.0f,  // top-right (from bottom face perspective)
-            -1.0f, -1.0f, -1.0f, // top-left
-            1.0f, -1.0f, -1.0f,  // bottom-left
-            1.0f, -1.0f, 1.0f    // bottom-right
+            // top 4 points (顺时针)
+            1.0f, -1.0f, 1.0f, // 0
+            -1.0f, -1.0f, 1.0f, // 1
+            -1.0f, 1.0f, 1.0f, // 2
+            1.0f, 1.0f, 1.0f, // 3
+
+            // bottom 4 points
+            1.0f, -1.0f, -1.0f, // 4
+            -1.0f, -1.0f, -1.0f, // 5
+            -1.0f, 1.0f, -1.0f, // 6
+            1.0f, 1.0f, -1.0f, // 7
     };
 
     private final short[] cubePositionsIndex = {
-            0, 1, 2, 0, 2, 3,       // Front face
-            4, 5, 6, 4, 6, 7,       // Right face
-            8, 9, 10, 8, 10, 11,    // Back face
-            12, 13, 14, 12, 14, 15, // Left face
-            16, 17, 18, 16, 18, 19, // Top face
-            20, 21, 22, 20, 22, 23  // Bottom face
-    };
-
-    float color[] = {
-            0f, 0f, 1f, 1f,
-            0f, 1f, 0f, 1f,
-            0f, 1f, 0f, 1f,
-            0f, 1f, 0f, 1f,
-            1f, 0f, 0f, 1f,
-            1f, 0f, 0f, 1f,
-            1f, 0f, 0f, 1f,
-            1f, 0f, 0f, 1f,
+            4, 0, 3, 3, 7, 4, // Front face
+            7, 6, 2, 2, 3, 7, // Right face
+            6, 2, 1, 1, 5, 6, // Back face
+            5, 1, 0, 0, 4, 5, // Left face
+            0, 1, 2, 2, 3, 0, // Top face
+            4, 5, 6, 6, 7, 4  // Bottom face
     };
 
     private final float[] textureCoordination = {
             // Front face
             0.0f, 0.0f,
-            0.0f, 1.5f,
-            1.5f, 1.5f,
-            1.5f, 0.0f,
-            // Right face
-            0.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f,
             1.0f, 0.0f,
-            // Back face
-            0.0f, 0.0f,
-            0.0f, 1.0f,
             1.0f, 1.0f,
-            1.0f, 0.0f,
-            // Left face
-            0.0f, 0.0f,
             0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-            // Top face
-            0.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-            // Bottom face
-            0.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f
     };
 
     private final float[] textureCoordinationOffset = {
-            // Front face
-            -0.25f, -0.25f,
-            -0.25f, -0.25f,
-            -0.25f, -0.25f,
-            -0.25f, -0.25f,
-            // Right face
             0.0f, 0.0f,
             0.0f, 0.0f,
             0.0f, 0.0f,
             0.0f, 0.0f,
-            // Back face
-            0.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 0.0f,
-            // Left face
-            0.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 0.0f,
-            // Top face
-            0.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 0.0f,
-            // Bottom face
-            0.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 0.0f
     };
 
 
@@ -231,20 +153,13 @@ public class RotatePicCube extends Shape {
     private int[] imageIds;
 
 
-    public RotatePicCube(View mView) {
+    public RotatePicCubeNew(View mView) {
         super(mView);
         ByteBuffer buffer = ByteBuffer.allocateDirect(cubePositions.length * 4);
         buffer.order(ByteOrder.nativeOrder());
         vertexBuffer = buffer.asFloatBuffer();
         vertexBuffer.put(cubePositions);
         vertexBuffer.position(0);
-
-        ByteBuffer dd = ByteBuffer.allocateDirect(
-                color.length * 4);
-        dd.order(ByteOrder.nativeOrder());
-        colorBuffer = dd.asFloatBuffer();
-        colorBuffer.put(color);
-        colorBuffer.position(0);
 
         ByteBuffer indexByteBuffer = ByteBuffer.allocateDirect(cubePositionsIndex.length * 2);
         indexByteBuffer.order(ByteOrder.nativeOrder());
@@ -254,9 +169,9 @@ public class RotatePicCube extends Shape {
 
         ByteBuffer coorBuffer = ByteBuffer.allocateDirect(textureCoordination.length * 4);
         coorBuffer.order(ByteOrder.nativeOrder());
-        this.textureCoordinationIndexBuffer = coorBuffer.asFloatBuffer();
-        textureCoordinationIndexBuffer.put(textureCoordination);
-        textureCoordinationIndexBuffer.position(0);
+        this.textureCoordinationBuffer = coorBuffer.asFloatBuffer();
+        textureCoordinationBuffer.put(textureCoordination);
+        textureCoordinationBuffer.position(0);
 
         ByteBuffer coorOffsetBuffer = ByteBuffer.allocateDirect(textureCoordinationOffset.length * 4);
         coorOffsetBuffer.order(ByteOrder.nativeOrder());
@@ -350,18 +265,6 @@ public class RotatePicCube extends Shape {
                 GLES20.GL_FLOAT, false,
                 0, vertexBuffer);
 
-        //设置绘制三角形的颜色
-//        GLES20.glUniform4fv(mColorHandle, 2, color, 0);
-//        GLES20.glEnableVertexAttribArray(colorHandle);
-//        GLES20.glVertexAttribPointer(colorHandle, 4,
-//                GLES20.GL_FLOAT, false,
-//                0, colorBuffer);
-
-
-        GLES20.glEnableVertexAttribArray(textureCoordinationHandle);
-        GLES20.glVertexAttribPointer(textureCoordinationHandle, 2, GLES20.GL_FLOAT, false, 0, textureCoordinationIndexBuffer);
-
-
         GLES20.glEnableVertexAttribArray(textureCoordinationOffsetHandle);
         GLES20.glVertexAttribPointer(textureCoordinationOffsetHandle, 2, GLES20.GL_FLOAT, false, 0, textureCoordinationOffsetIndexBuffer);
 
@@ -372,11 +275,13 @@ public class RotatePicCube extends Shape {
 
         // 绘制立方体的每个面
         for (int i = 0; i < 6; i++) {
+            GLES20.glEnableVertexAttribArray(textureCoordinationHandle);
+            GLES20.glVertexAttribPointer(textureCoordinationHandle, 2, GLES20.GL_FLOAT, false, 0, textureCoordinationBuffer);
             // 激活纹理0
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glUniform1i(textureUniformHandle, 0);
             // 每个面绑定不同的纹理id
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture[i]);
-            GLES20.glUniform1i(textureUniformHandle, 0);
 
             // 绘制
             cubePositionsIndexBuffer.position(6 * i);

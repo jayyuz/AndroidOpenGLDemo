@@ -25,7 +25,7 @@ import edu.wuwang.opengl.utils.ShaderUtils;
 /**
  * Description:
  */
-public abstract class AFilter implements GLSurfaceView.Renderer {
+public abstract class AFilterRenderer implements GLSurfaceView.Renderer {
 
     private Context mContext;
     private int mProgram;
@@ -65,7 +65,7 @@ public abstract class AFilter implements GLSurfaceView.Renderer {
             1.0f, 1.0f,
     };
 
-    public AFilter(Context context, String vertex, String fragment) {
+    public AFilterRenderer(Context context, String vertex, String fragment) {
         this.mContext = context;
         this.vertex = vertex;
         this.fragment = fragment;

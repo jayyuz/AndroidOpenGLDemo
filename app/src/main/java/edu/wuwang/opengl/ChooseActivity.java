@@ -8,9 +8,6 @@ package edu.wuwang.opengl;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,23 +16,23 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 
 import edu.wuwang.opengl.render.Ball;
 import edu.wuwang.opengl.render.BallWithLight;
 import edu.wuwang.opengl.render.Cone;
-import edu.wuwang.opengl.render.Cube;
+import edu.wuwang.opengl.render.CubeNew;
 import edu.wuwang.opengl.render.Cylinder;
 import edu.wuwang.opengl.render.Oval;
-import edu.wuwang.opengl.render.PICRotateCube;
 import edu.wuwang.opengl.render.RotateCube;
 import edu.wuwang.opengl.render.RotatePicCube;
+import edu.wuwang.opengl.render.RotatePicCubeNew;
 import edu.wuwang.opengl.render.Square;
-import edu.wuwang.opengl.render.TRotateCube;
 import edu.wuwang.opengl.render.Triangle;
 import edu.wuwang.opengl.render.TriangleColorFull;
 import edu.wuwang.opengl.render.TriangleWithCamera;
-import edu.wuwang.opengl.render.TriangleWithPIC;
 
 /**
  * Description:
@@ -71,6 +68,8 @@ public class ChooseActivity extends AppCompatActivity {
 
     private void initData() {
         mData = new ArrayList<>();
+        add("PIC正方体New", RotatePicCubeNew.class);
+        add("CubeNew", CubeNew.class);
         add("三角形", Triangle.class);
         add("正三角形", TriangleWithCamera.class);
         add("彩色三角形", TriangleColorFull.class);
@@ -83,8 +82,9 @@ public class ChooseActivity extends AppCompatActivity {
         add("带光源的球体", BallWithLight.class);
         add("正方体2", RotateCube.class);
         add("PIC正方体", RotatePicCube.class);
-        add("T正方体", TRotateCube.class);
-        add("PIC三角形", TriangleWithPIC.class);
+
+//        add("T正方体", TRotateCube.class);
+//        add("PIC三角形", TriangleWithPIC.class);
     }
 
     private void add(String showName, Class<?> clazz) {

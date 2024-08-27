@@ -14,26 +14,26 @@ import android.view.View;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import edu.wuwang.opengl.image.filter.AFilter;
-import edu.wuwang.opengl.image.filter.ColorFilter;
-import edu.wuwang.opengl.image.filter.ContrastColorFilter;
+import edu.wuwang.opengl.image.filter.AFilterRenderer;
+import edu.wuwang.opengl.image.filter.ColorFilterRenderer;
+import edu.wuwang.opengl.image.filter.ContrastColorFilterRenderer;
 
 /**
  * Description:
  */
 public class SGLRender implements GLSurfaceView.Renderer {
 
-    private AFilter mFilter;
+    private AFilterRenderer mFilter;
     private Bitmap bitmap;
     private int width, height;
     private boolean refreshFlag = false;
     private EGLConfig config;
 
     public SGLRender(View mView) {
-        mFilter = new ContrastColorFilter(mView.getContext(), ColorFilter.Filter.NONE);
+        mFilter = new ContrastColorFilterRenderer(mView.getContext(), ColorFilterRenderer.Filter.NONE);
     }
 
-    public void setFilter(AFilter filter) {
+    public void setFilter(AFilterRenderer filter) {
         refreshFlag = true;
         mFilter = filter;
         if (bitmap != null) {
@@ -50,7 +50,7 @@ public class SGLRender implements GLSurfaceView.Renderer {
         refreshFlag = true;
     }
 
-    public AFilter getFilter() {
+    public AFilterRenderer getFilter() {
         return mFilter;
     }
 
